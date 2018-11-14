@@ -25,6 +25,13 @@ module.exports = function(db) {
 
     var app = express();
 
+    var elementorContent = require('elementor-nodejs');
+
+    app.use(elementorContent({ 
+      target: "http://localhost:3010",
+      redirects: [/\/about\/?/, "/contact"],
+    }));
+
     if (app.get('env') === 'production') {
         var Raven = require('raven');
         Raven.config('https://'+config.raven.key+'@sentry.io/'+config.raven.project, {

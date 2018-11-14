@@ -34,6 +34,8 @@ services:
       RABBITMQ_HOST: ${COMPOSE_PROJECT_NAME}_rabbit
       DB_PORT_27017_TCP_ADDR: ${COMPOSE_PROJECT_NAME}_mongo
     restart: always
+    ports:
+      - 9229:9229   
 
   app:
     build: ./src/app
@@ -48,3 +50,12 @@ services:
       PORT: ${APP_HTTP_PORT}
       API_URL: http://${COMPOSE_PROJECT_NAME}_api:${API_HTTP_PORT}
     restart: always
+
+  elementor:
+     build: ./src/elementor-parser
+     container_name: "elementor"
+     ports:
+       - "3010:80"
+     restart: always
+     environment:
+       - PROXY_FROM=http://localhost:${APP_HTTP_PORT}/elementor
