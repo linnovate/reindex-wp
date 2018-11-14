@@ -1,0 +1,5 @@
+{ "index" : { "_index" : "reindex-categories", "_type" : "A", "_id" : "1" } }
+{ "content" : "Electronics Store" }
+{ "index" : { "_index" : "reindex-categories", "_type" : "A", "_id" : "2"} }
+{ "content" : "Home Improvement Salesperson" }
+ 

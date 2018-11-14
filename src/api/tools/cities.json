@@ -1,0 +1,25 @@
+ {
+    "index": {
+        "_index": "reindex-cities",
+        "_type": "cities",
+        "_id": "1"
+    }
+}
+{
+    "content": "BROOKLYN"
+}
+{
+    "index": {
+        "_index": "reindex-cities",
+        "_type": "cities",
+        "_id": "2"
+    }
+}
+{
+    "content": "CORONA"
+}
+
+
+curl -XPOST http://172.17.0.1:9200/reindex-cities/cities/1 -d '{
+    "content":"test"
+}'

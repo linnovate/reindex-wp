@@ -1,0 +1,50 @@
+version: '2'
+
+services:
+  mongo:
+    image: mongo:3.6
+    container_name: ${COMPOSE_PROJECT_NAME}_mongo
+    volumes:
+      - ${MONGODB_DATA_PATH}:/data/db
+    restart: always
+
+  rabbit:
+    image: rabbitmq:3.6-management
+    container_name: ${COMPOSE_PROJECT_NAME}_rabbit
+    restart: always
+
+  elasticsearch:
+    image: elasticsearch:5.6
+    container_name: ${COMPOSE_PROJECT_NAME}_elasticsearch
+    volumes:
+      - ${ELASTIC_DATA_PATH}:/usr/share/elasticsearch/data
+    restart: always
+    mem_limit: 512m
+
+  api:
+    build: ./src/api
+    container_name: ${COMPOSE_PROJECT_NAME}_api
+    volumes:
+      - ./src/api:/usr/src/app
+      - ./src/custom/api:/usr/src/custom/api
+    env_file: ./src/api/.env
+    environment:
+      PORT: ${API_HTTP_PORT}
+      ELASTIC_HOST: ${COMPOSE_PROJECT_NAME}_elasticsearch
+      RABBITMQ_HOST: ${COMPOSE_PROJECT_NAME}_rabbit
+      DB_PORT_27017_TCP_ADDR: ${COMPOSE_PROJECT_NAME}_mongo
+    restart: always
+
+  app:
+    build: ./src/app
+    container_name: ${COMPOSE_PROJECT_NAME}_app
+    command: npm run dev
+    volumes:
+      - ./src/app:/usr/src/app
+    ports:
+      - ${APP_HTTP_PORT}:${APP_HTTP_PORT}
+    environment:
+      NODE_ENV: ${APP_NODE_ENV}
+      PORT: ${APP_HTTP_PORT}
+      API_URL: http://${COMPOSE_PROJECT_NAME}_api:${API_HTTP_PORT}
+    restart: always
